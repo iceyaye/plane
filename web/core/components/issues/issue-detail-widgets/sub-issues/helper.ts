@@ -41,15 +41,12 @@ export const useSubIssueOperations = (issueServiceType: TIssueServiceType): TSub
   const subIssueOperations: TSubIssueOperations = useMemo(
     () => ({
       copyLink: (path) => {
-        copyUrlToClipboard(`/${path}`).then(() => {
+        copyUrlToClipboard(path).then(() => {
           setToast({
             type: TOAST_TYPE.SUCCESS,
             title: t("common.link_copied"),
             message: t("entity.link_copied_to_clipboard", {
-              entity:
-                issueServiceType === EIssueServiceType.ISSUES
-                  ? t("issue.label", { count: 1 })
-                  : t("epic.label", { count: 1 }),
+              entity: t("epic.label", { count: 1 }),
             }),
           });
         });

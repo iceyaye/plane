@@ -3,15 +3,14 @@
 import { observer } from "mobx-react";
 import { ChevronRight, X, Pencil, Trash, Link as LinkIcon, Loader } from "lucide-react";
 // plane imports
-import { EIssueServiceType } from "@plane/constants";
+import { EIssueServiceType, EIssuesStoreType } from "@plane/constants";
 import { useTranslation } from "@plane/i18n";
 import { TIssue, TIssueServiceType, TSubIssueOperations } from "@plane/types";
 import { ControlLink, CustomMenu, Tooltip } from "@plane/ui";
+import { cn, generateWorkItemLink } from "@plane/utils";
 // helpers
 import { useSubIssueOperations } from "@/components/issues/issue-detail-widgets/sub-issues/helper";
 import { WithDisplayPropertiesHOC } from "@/components/issues/issue-layouts/properties/with-display-properties-HOC";
-import { cn } from "@/helpers/common.helper";
-import { generateWorkItemLink } from "@/helpers/issue.helper";
 // hooks
 import { useIssueDetail, useProject, useProjectState } from "@/hooks/store";
 import useIssuePeekOverviewRedirection from "@/hooks/use-issue-peek-overview-redirection";
@@ -37,6 +36,7 @@ type Props = {
   subIssueOperations: TSubIssueOperations;
   issueId: string;
   issueServiceType?: TIssueServiceType;
+  storeType?: EIssuesStoreType;
 };
 
 export const SubIssuesListItem: React.FC<Props> = observer((props) => {
@@ -51,6 +51,7 @@ export const SubIssuesListItem: React.FC<Props> = observer((props) => {
     handleIssueCrudState,
     subIssueOperations,
     issueServiceType = EIssueServiceType.ISSUES,
+    storeType = EIssuesStoreType.PROJECT,
   } = props;
   const { t } = useTranslation();
   const {
@@ -81,7 +82,7 @@ export const SubIssuesListItem: React.FC<Props> = observer((props) => {
 
   // derived values
   const subIssueFilters = getSubIssueFilters(parentIssueId);
-  const displayProperties = subIssueFilters.displayProperties ?? {};
+  const displayProperties = subIssueFilters?.displayProperties ?? {};
 
   //
   const handleIssuePeekOverview = (issue: TIssue) => handleRedirection(workspaceSlug, issue, isMobile);
@@ -265,6 +266,7 @@ export const SubIssuesListItem: React.FC<Props> = observer((props) => {
         subIssueCount > 0 &&
         !isCurrentIssueRoot && (
           <SubIssuesListRoot
+            storeType={storeType}
             workspaceSlug={workspaceSlug}
             projectId={issue.project_id}
             parentIssueId={issue.id}
